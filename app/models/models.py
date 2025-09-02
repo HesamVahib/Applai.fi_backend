@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, UniqueConstraint, func #, Text (for long texts like description)
-from app.database import Base
+from database import Base
 
 class Jobs(Base):
     __tablename__ = "jobs"
@@ -7,6 +7,7 @@ class Jobs(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     location = Column(String, index=True)
+    category = Column(String)
     company = Column(String, nullable=True)
     link = Column(String, unique=True)
     created_at = Column(DateTime, default=func.now())
