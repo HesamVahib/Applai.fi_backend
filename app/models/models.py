@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, func #, Text (for long texts like description)
+from sqlalchemy import Column, Integer, String, DateTime, UniqueConstraint, func #, Text (for long texts like description)
 from app.database import Base
 
 class Jobs(Base):
@@ -7,8 +7,13 @@ class Jobs(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     location = Column(String, index=True)
-    company = Column(String)
+    company = Column(String, nullable=True)
     link = Column(String, unique=True)
     created_at = Column(DateTime, default=func.now())
-    fi_lang = Column(String)
-    en_lang = Column(String)
+    fi_lang = Column(String, nullable=True)
+    en_lang = Column(String, nullable=True)
+
+## unique constraints
+    __table_args__ = (
+        UniqueConstraint('link'),
+    )
