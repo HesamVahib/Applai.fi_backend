@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from models.models import Jobs
-from database import get_db
-from schemas.schemas import JobCreate, JobResponse, PaginationJobsResponse
-from api_key import get_api_key
+from app.models.models import Jobs
+from app.database import get_db
+from app.schemas.schemas import JobCreate, JobResponse, PaginationJobsResponse
+from app.utils.api_key import get_api_key
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 

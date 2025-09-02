@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import jobs
+from app.routes import jobs
 
 app = FastAPI()
 
