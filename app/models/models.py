@@ -10,3 +10,5 @@ class Jobs(Base):
     company = Column(String)
     link = Column(String, unique=True)
     created_at = Column(DateTime, default=func.now())
+    fi_lang = Column(String)
+    en_lang = Column(String)

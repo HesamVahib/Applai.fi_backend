@@ -47,6 +47,8 @@ async def create_job(job: JobCreate, db: AsyncSession = Depends(get_db)) -> JobR
         location=job.location,
         company=job.company,
         link=job.link,
+        fi_lang=job.fi_lang,
+        en_lang=job.en_lang,
     )
 
     try:
