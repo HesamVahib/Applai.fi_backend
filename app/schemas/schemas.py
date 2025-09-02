@@ -1,11 +1,10 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
-
 class JobCreate(BaseModel):
     title: str
     location: str
-    category: str
+    category: Optional[str] = None
     company: Optional[str] = None
     link: str
     fi_lang: Optional[str] = None
