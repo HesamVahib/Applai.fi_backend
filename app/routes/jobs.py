@@ -15,13 +15,13 @@ router = APIRouter(prefix="/jobs", tags=["jobs"])
 async def get_jobs(
     db: AsyncSession = Depends(get_db),
     skip: int = Query(0, ge=0),
-    limit: int = Query(20, ge=1),
+    limit: int = Query(30, ge=1),
     ):
 
     total_number = await db.execute(select(func.count()).select_from(Jobs))
     total_jobs = total_number.scalar()
 
-    result = await db.execute(select(Jobs).offset(skip).limit(limit))
+    result = await db.execute(select(Jobs).offset(skip).limit(limit).order_by(Jobs.id.desc()))
     jobs = result.scalars().all()
     if not jobs:
         raise HTTPException(status_code=404, detail="No jobs found")
