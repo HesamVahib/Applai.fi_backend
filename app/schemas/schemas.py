@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Any
+from datetime import datetime
 
 class JobCreate(BaseModel):
     title: str
@@ -12,6 +13,7 @@ class JobCreate(BaseModel):
 
 class JobResponse(JobCreate):
     id: int
+    created_at: Optional[datetime] = None
 
     class Config:
         orm_mode = True
