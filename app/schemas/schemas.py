@@ -3,7 +3,7 @@ from typing import List, Optional
 
 class JobCreate(BaseModel):
     title: str
-    location: str
+    location: Optional[str] = None
     category: Optional[str] = None
     company: Optional[str] = None
     link: str
