@@ -5,8 +5,8 @@ from app.routes import jobs
 app = FastAPI()
 
 origins = [
-    "http://localhost",
-    "https://applai-fi.vercel.app/"
+    "http://localhost:3000",
+    "https://applai-fi.vercel.app"
 ]
 
 app.add_middleware(
