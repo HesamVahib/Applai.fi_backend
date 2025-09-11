@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
+from matplotlib.pyplot import title
 from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -16,12 +17,28 @@ async def get_jobs(
     db: AsyncSession = Depends(get_db),
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1),
-    ):
+    title_filter: str = Query(None, alias="title"),
+    category_filter: str = Query(None, alias="category"),
+    location_filter: str = Query(None, alias="location"),
+) -> PaginationJobsResponse:
 
     total_number = await db.execute(select(func.count()).select_from(Jobs))
     total_jobs = total_number.scalar()
+    print("*" * 20)
+    print(location_filter, category_filter, title_filter)
 
-    result = await db.execute(select(Jobs).offset(skip).limit(limit).order_by(Jobs.id.desc()))
+    result = await db.execute(
+        select(Jobs)
+        .offset(skip)
+        .limit(limit)
+        .where(
+            Jobs.title.ilike(f"%{title_filter}%") if title_filter else True,
+            Jobs.category.ilike(f"%{category_filter}%") if category_filter else True,
+            Jobs.location.ilike(f"%{location_filter}%") if location_filter else True,
+        )
+        .order_by(Jobs.id.desc())
+    )
+
     jobs = result.scalars().all()
     if not jobs:
         raise HTTPException(status_code=404, detail="No jobs found")
