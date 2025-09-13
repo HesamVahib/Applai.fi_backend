@@ -11,7 +11,7 @@ router = APIRouter(prefix="/jobs", tags=["jobs"])
 
 
 # get all jobs
-@router.get("/", response_model=PaginationJobsResponse, status_code=status.HTTP_200_OK)
+@router.get("/", response_model=PaginationJobsResponse, status_code=status.HTTP_200_OK, dependencies=[Depends(get_api_key)])
 async def get_jobs(
     db: AsyncSession = Depends(get_db),
     skip: int = Query(0, ge=0),
@@ -45,7 +45,7 @@ async def get_jobs(
 
 
 # get job by id
-@router.get("/{job_id}", response_model=JobResponse, status_code=status.HTTP_200_OK)
+@router.get("/{job_id}", response_model=JobResponse, status_code=status.HTTP_200_OK, dependencies=[Depends(get_api_key)])
 async def get_job_id(job_id: int, db: AsyncSession = Depends(get_db)) -> JobResponse:
     result = await db.execute(select(Jobs).where(Jobs.id == job_id))
     job = result.scalar_one_or_none()
