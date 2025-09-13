@@ -1,6 +1,8 @@
 from pydantic import BaseModel
-from typing import List, Optional, Any
+from typing import List, Optional
 from datetime import datetime
+
+## Job Schemas
 
 class JobCreate(BaseModel):
     title: str
@@ -21,3 +23,27 @@ class JobResponse(JobCreate):
 class PaginationJobsResponse(BaseModel):
     total_jobs: int
     jobs: List[JobResponse]
+
+## User Schemas
+
+class UserCreate(BaseModel):
+    email: str
+    password: str
+
+class UserResponse(BaseModel):
+    id: int
+    email: str
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    last_login_at: Optional[datetime] = None
+
+    class Config:
+        orm_mode = True
+
+class PaginationUsersResponse(BaseModel):
+    total_users: int
+    users: List[UserResponse]
+
+class UserEdit(BaseModel):
+    email: Optional[str] = None
+    password: Optional[str] = None

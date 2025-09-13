@@ -18,3 +18,14 @@ class Jobs(Base):
     __table_args__ = (
         UniqueConstraint('link'),
     )
+
+
+class Users(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True)
+    password_hash = Column(String)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    last_login_at = Column(DateTime, nullable=True)
