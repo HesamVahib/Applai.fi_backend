@@ -6,6 +6,7 @@ from app.models.models import Jobs
 from app.database import get_db
 from app.schemas.schemas import JobCreate, JobResponse, PaginationJobsResponse
 from app.utils.api_key import get_api_key
+from datetime import datetime as dt, timedelta
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
@@ -19,12 +20,35 @@ async def get_jobs(
     title_filter: str = Query(None, alias="title"),
     category_filter: str = Query(None, alias="category"),
     location_filter: str = Query(None, alias="location"),
+    date_filter: str = Query(None, alias="date"),
 ) -> PaginationJobsResponse:
 
     total_number = await db.execute(select(func.count()).select_from(Jobs))
     total_jobs = total_number.scalar()
     print("*" * 20)
     print(location_filter, category_filter, title_filter)
+
+    today = dt.now()
+
+    if date_filter:
+        if date_filter == "today":
+            date_filter = today.date()
+            date_condition = Jobs.created_at >= date_filter
+        elif date_filter == "last_3_days":
+            start_date = today - timedelta(days=3)
+            end_date = today - timedelta(days=1)
+            date_condition = Jobs.created_at.between(start_date, end_date)
+        elif date_filter == "last_week":
+            start_date = today - timedelta(days=7)
+            end_date = today - timedelta(days=3)
+            date_condition = Jobs.created_at >= start_date
+        elif date_filter == "last_month":
+            start_date = today - timedelta(days=30)
+            end_date = today - timedelta(days=7)
+            date_condition = Jobs.created_at.between(start_date, end_date)
+        else:
+            date_condition = True
+
 
     result = await db.execute(
         select(Jobs)
@@ -34,6 +58,7 @@ async def get_jobs(
             Jobs.title.ilike(f"%{title_filter}%") if title_filter else True,
             Jobs.category.ilike(f"%{category_filter}%") if category_filter else True,
             Jobs.location.ilike(f"%{location_filter}%") if location_filter else True,
+            date_condition,
         )
         .order_by(Jobs.id.desc())
     )
