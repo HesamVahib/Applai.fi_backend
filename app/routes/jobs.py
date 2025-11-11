@@ -29,25 +29,29 @@ async def get_jobs(
     print(location_filter, category_filter, title_filter)
 
     today = dt.now()
+    print("Today:", today)
 
     if date_filter:
         if date_filter == "today":
-            date_filter = today.date()
-            date_condition = Jobs.created_at >= date_filter
+            start_date = today - timedelta(days=2)
+            end_date = today - timedelta(days=0)
+            date_condition = Jobs.created_at.between(start_date, end_date)
         elif date_filter == "last_3_days":
-            start_date = today - timedelta(days=3)
-            end_date = today - timedelta(days=1)
+            start_date = today - timedelta(days=4)
+            end_date = today - timedelta(days=2)
             date_condition = Jobs.created_at.between(start_date, end_date)
         elif date_filter == "last_week":
             start_date = today - timedelta(days=7)
-            end_date = today - timedelta(days=3)
-            date_condition = Jobs.created_at >= start_date
+            end_date = today
+            date_condition = Jobs.created_at.between(start_date, end_date)
         elif date_filter == "last_month":
             start_date = today - timedelta(days=30)
-            end_date = today - timedelta(days=7)
+            end_date = today
             date_condition = Jobs.created_at.between(start_date, end_date)
         else:
             date_condition = True
+    else:
+        date_condition = True
 
 
     result = await db.execute(
